@@ -29,9 +29,11 @@ for($i = 0; $i < $count | !feof($infile); $i++) {
 	$item[$i]["text"] = mb_convert_encoding($data, "UTF-8", "SJIS-win");
 	$data = fread($infile, 6);
 	$buf = unpack("Ctag1/Vtag2/Ctag3", $data);
-	$item[$i]["tag1"] = $buf["tag1"];
+	$item[$i]["rare"] = ($buf["tag1"] / 1) % 2;
+	$item[$i]["notrade"] = ($buf["tag1"] / 2) % 2;
+	$item[$i]["price"] = (($buf["tag1"] / 4) % 2) - 1;
 	$item[$i]["tag2"] = $buf["tag2"];
-	$item[$i]["tag3"] = $buf["tag3"];
+	$item[$i]["stack"] = $buf["tag3"];
 }
 fclose($infile);
 
@@ -52,38 +54,9 @@ foreach($item as $it) {
 		echo "ID:".$it["id"]." ".$it["name"]." を新規登録しますか？ ";
 		$stdin = trim(fgets(STDIN));
 		if($stdin == 'y') {
-			$sql_data = "id, name, text, rare, notrade, price, stack";
-			if($it["category"] == 0 || $it["category"] == 1) {
-				$group = $it["line"] + 10;
-			} else if($it["category"] == 2) {
-				if(floor($it["id"] / 100) == 10) {
-					$group = 40;
-				} else {
-					$group = floor($it["id"] / 100) + 26;
-				}
-			} else if($it["category"] == 4) {
-				echo "分類を入力してください(61,62,63,66,67,69) ";
-				while(true) {
-					$stdin = trim(fgets(STDIN));
-					if($stdin == "61" || $stdin == "62" || $stdin == "63" || $stdin == "66" || $stdin == "67" || $stdin == "69") {
-						break;
-					}
-					echo "ERROR:無効な値です。 ";
-				}
-				$group = $stdin;
-			}
-			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$group."'";
-			if($it["category"] == 0 || $it["category"] == 1 || $it["category"] == 2) {
-				if($it["category"] != 1) {
-					$sql_data .= ", cost, recast";
-					$sql_value .= ", '".$it["cost"]."', '".$it["recast"]."'";
-				}
-				$sql_data .= ", text";
-				$sql_value .= ", '".$it["text"]."'";
-			}
 			$date = date("Y-m-d");
-			$sql_data .= ", updated";
-			$sql_value .= ", '".$date."'";
+			$sql_data = "id, name, text, rare, notrade, price, stack, updated";
+			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '"$it["stack"]."', '".$date."'";
 			$sql[] = "INSERT INTO skill (".$sql_data.") VALUES(".$sql_value.")";
 		}
 	}
@@ -93,5 +66,7 @@ if(isset($sql)) {
 	foreach($sql as $s) {
 		$s_data->query($s);
 	}
+} else {
+	echo "更新はありませんでした。";
 }
 ?>
