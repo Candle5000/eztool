@@ -9,23 +9,24 @@ if($infile == null) {
 	die("input file error\n");
 }
 
-fread($infile, 2);
-$data = fread($infile, 1);
+$data = fread($infile, 2);
 $buf = unpack("vcount", $data);
 $count = $buf["count"];
 
-for($i = 0; $i < $count | !feof($infile); $i++) {
-	$data = fread($infile, 3);
-	$buf = unpack("vid/Cname_length", $data);
+for($i = 0; $i < $count && !feof($infile); $i++) {
+	$data = fread($infile, 2);
+	$buf = unpack("vid", $data);
 	$item[$i]["id"] = $buf["id"];
 	if($item[$i]["id"] == 0) {
 		break;
 	}
+	$data = fread($infile, 1);
+	$buf = unpack("Cname_length", $data);
 	$data = fread($infile, $buf["name_length"]);
 	$item[$i]["name"] = mb_convert_encoding($data, "UTF-8", "SJIS-win");
 	$data = fread($infile, 1);
 	$buf = unpack("Ctext_length", $data);
-	$data = fread($infile, $buf["text_length"]);
+	if($buf["text_length"] > 0) $data = fread($infile, $buf["text_length"]);
 	$item[$i]["text"] = mb_convert_encoding($data, "UTF-8", "SJIS-win");
 	$data = fread($infile, 6);
 	$buf = unpack("Ctag1/Vtag2/Ctag3", $data);
@@ -56,7 +57,7 @@ foreach($item as $it) {
 		if($stdin == 'y') {
 			$date = date("Y-m-d");
 			$sql_data = "id, name, text, rare, notrade, price, stack, updated";
-			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '"$it["stack"]."', '".$date."'";
+			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '".$it["stack"]."', '".$date."'";
 			$sql[] = "INSERT INTO skill (".$sql_data.") VALUES(".$sql_value.")";
 		}
 	}
@@ -67,6 +68,6 @@ if(isset($sql)) {
 		$s_data->query($s);
 	}
 } else {
-	echo "更新はありませんでした。";
+	echo "データ更新なし。\n";
 }
 ?>
