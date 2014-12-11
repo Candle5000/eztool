@@ -58,7 +58,7 @@ foreach($item as $it) {
 			$date = date("Y-m-d");
 			$sql_data = "id, name, text, rare, notrade, price, stack, updated";
 			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '".$it["stack"]."', '".$date."'";
-			$sql[] = "INSERT INTO skill (".$sql_data.") VALUES(".$sql_value.")";
+			$sql[] = "INSERT INTO items (".$sql_data.") VALUES(".$sql_value.")";
 		}
 	}
 }
