@@ -56,8 +56,8 @@ foreach($item as $it) {
 		$stdin = trim(fgets(STDIN));
 		if($stdin == 'y') {
 			$date = date("Y-m-d");
-			$sql_data = "id, name, text, rare, notrade, price, stack, updated";
-			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '".$it["stack"]."', '".$date."'";
+			$sql_data = "id, name, text, rare, notrade, price, stack, note, updated";
+			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '".$it["stack"]."', '特になし', '".$date."'";
 			$sql[] = "INSERT INTO items (".$sql_data.") VALUES(".$sql_value.")";
 		}
 	}
