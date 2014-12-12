@@ -33,6 +33,7 @@ for($i = 0; $i < $count && !feof($infile); $i++) {
 	$item[$i]["rare"] = ($buf["tag1"] / 1) % 2;
 	$item[$i]["notrade"] = ($buf["tag1"] / 2) % 2;
 	$item[$i]["price"] = (($buf["tag1"] / 4) % 2) - 1;
+	$item[$i]["note"] = (($buf["tag1"] / 8) % 2) ? "破棄不可" : "特になし";
 	$item[$i]["tag2"] = $buf["tag2"];
 	$item[$i]["stack"] = $buf["tag3"];
 }
@@ -52,13 +53,36 @@ foreach($item as $it) {
 	$s_sql = "SELECT * FROM items WHERE id=".$it["id"];
 	$s_data->query($s_sql);
 	if($s_data->rows() == 0) {
+
+		//新規登録
 		echo "ID:".$it["id"]." ".$it["name"]." を新規登録しますか？ ";
 		$stdin = trim(fgets(STDIN));
 		if($stdin == 'y') {
 			$date = date("Y-m-d");
 			$sql_data = "id, name, text, rare, notrade, price, stack, note, updated";
-			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '".$it["stack"]."', '特になし', '".$date."'";
+			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '".$it["stack"]."', '".$it["note"]."', '".$date."'";
 			$sql[] = "INSERT INTO items (".$sql_data.") VALUES(".$sql_value.")";
+		}
+	} else {
+
+		//登録変更
+		$array = $s_data->fetch();
+		unset($sql_set);
+		$data = array("name","text","rare","notrade","stack");
+		if(($array["price"] != $it["price"]) && (($array["price"] == 0) != ($it["price"] == 0))) {
+			$sql_set[] = "price='".$it["price"]."'";
+		}
+		foreach($data as $d) {
+			if($array[$d] != $it[$d]) {
+				$sql_set[] = $d."='".$it[$d]."'";
+			}
+		}
+		if(isset($sql_set)) {
+			echo "ID:".$it["id"]." ".$it["name"]." を変更しますか？ ";
+			$stdin = trim(fgets(STDIN));
+			if($stdin == 'y') {
+				$sql[] = "UPDATE items SET ".implode(",", $sql_set)." WHERE id=".$it["id"];
+			}
 		}
 	}
 }
