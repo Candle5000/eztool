@@ -23,11 +23,11 @@ for($i = 0; $i < $count && !feof($infile); $i++) {
 	$data = fread($infile, 1);
 	$buf = unpack("Cname_length", $data);
 	$data = fread($infile, $buf["name_length"]);
-	$item[$i]["name"] = mb_convert_encoding($data, "UTF-8", "SJIS-win");
+	$item[$i]["name"] = htmlspecialchars(mb_convert_encoding($data, "UTF-8", "SJIS-win"));
 	$data = fread($infile, 1);
 	$buf = unpack("Ctext_length", $data);
-	if($buf["text_length"] > 0) $data = fread($infile, $buf["text_length"]);
-	$item[$i]["text"] = mb_convert_encoding($data, "UTF-8", "SJIS-win");
+	$data = ($buf["text_length"] > 0) ? fread($infile, $buf["text_length"]) : "";
+	$item[$i]["text"] = htmlspecialchars(mb_convert_encoding($data, "UTF-8", "SJIS-win"));
 	$data = fread($infile, 6);
 	$buf = unpack("Ctag1/Vtag2/Ctag3", $data);
 	$item[$i]["rare"] = ($buf["tag1"] / 1) % 2;
@@ -81,6 +81,7 @@ foreach($item as $it) {
 			echo "ID:".$it["id"]." ".$it["name"]." を変更しますか？ ";
 			$stdin = trim(fgets(STDIN));
 			if($stdin == 'y') {
+				$sql_set[] = "updated='".date("Y-m-d")."'";
 				$sql[] = "UPDATE items SET ".implode(",", $sql_set)." WHERE id=".$it["id"];
 			}
 		}
