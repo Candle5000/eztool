@@ -22,12 +22,10 @@ for($i = 0; $i < $count && !feof($infile); $i++) {
 	$data = fread($infile, 1);
 	$buf = unpack("Cname_length", $data);
 	$data = fread($infile, $buf["name_length"]);
-	//$item[$i]["name"] = htmlspecialchars(mb_convert_encoding($data, "UTF-8", "SJIS-win"));
 	$item[$i]["name"] = mb_convert_encoding($data, "UTF-8", "SJIS-win");
 	$data = fread($infile, 1);
 	$buf = unpack("Ctext_length", $data);
 	$data = ($buf["text_length"] > 0) ? fread($infile, $buf["text_length"]) : "";
-	//$item[$i]["text"] = htmlspecialchars(mb_convert_encoding($data, "UTF-8", "SJIS-win"));
 	$item[$i]["text"] = mb_convert_encoding($data, "UTF-8", "SJIS-win");
 	$data = fread($infile, 6);
 	$buf = unpack("Ctag1/Vtag2/Ctag3", $data);
@@ -116,6 +114,7 @@ if(isset($sql)) {
 	}
 	flock($outfile, LOCK_UN);
 	fclose($outfile);
+	echo "データ更新完了。\n";
 } else {
 	echo "データ更新なし。\n";
 }
