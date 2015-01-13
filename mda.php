@@ -28,7 +28,7 @@ for($i = 0; !feof($infile); $i++) {
 	}
 	$buf = unpack("vid/Cname_length", $data);
 	$npc[$i]["id"] = 65536 - $buf["id"];
-	$npc[$i]["name"] = fread($infile, $buf["name_length"]);
+	$npc[$i]["name"] = ($buf["name_length"] != 0) ? fread($infile, $buf["name_length"]) : "";
 	$data = fread($infile, 1);
 	$buf = unpack("Cres", $data);
 	$npc[$i]["res"] = "";
