@@ -1,6 +1,7 @@
 <?php
 require_once("/var/www/class/mysql.php");
 $file = "update.txt";
+$mode = 0;
 
 if(!isset($argv[1])) {
 	die("input file error\n");
@@ -8,6 +9,13 @@ if(!isset($argv[1])) {
 $infile = fopen($argv[1], 'r');
 if($infile == null) {
 	die("input file error\n");
+}
+if(isset($argv[2])) {
+	if($argv[2] == 'y') {
+		$mode = 1;
+	} else {
+		die("undefined key: $argv\n");
+	}
 }
 
 $data = fread($infile, 2);
@@ -54,9 +62,11 @@ foreach($item as $it) {
 	if($s_data->rows() == 0) {
 
 		//新規登録
-		echo "ID:".$it["id"]." ".$it["name"]." を新規登録しますか？(yで許可) ";
-		$stdin = trim(fgets(STDIN));
-		if($stdin == 'y') {
+		if($mode == 0) {
+			echo "ID:".$it["id"]." ".$it["name"]." を新規登録しますか？(yで許可) ";
+			$stdin = trim(fgets(STDIN));
+		}
+		if($mode == 1 || $stdin == 'y') {
 			$date = date("Y-m-d");
 			$sql_data = "id, name, text, rare, notrade, price, stack, note, updated";
 			$sql_value = "'".$it["id"]."', '".$it["name"]."', '".$it["text"]."', '".$it["rare"]."', '".$it["notrade"]."', '".$it["price"]."', '".$it["stack"]."', '".$it["note"]."', '".$date."'";
@@ -85,9 +95,11 @@ foreach($item as $it) {
 			}
 		}
 		if(isset($sql_set)) {
-			echo "ID:".$it["id"]." ".$it["name"]."\n".implode("\n", $diff)."\n変更しますか？(yで許可) ";
-			$stdin = trim(fgets(STDIN));
-			if($stdin == 'y') {
+			if($mode == 0) {
+				echo "ID:".$it["id"]." ".$it["name"]."\n".implode("\n", $diff)."\n変更しますか？(yで許可) ";
+				$stdin = trim(fgets(STDIN));
+			}
+			if($mode == 1 || $stdin == 'y') {
 				$sql_set[] = "updated='".date("Y-m-d")."'";
 				$sql[] = "UPDATE items SET ".implode(",", $sql_set)." WHERE id=".$it["id"];
 				$text_upd[] = "ID : ".$it["id"]." <a href=\"http://5000.pgw.jp/db/item/data/?id=".$it["id"]."\">".$it["name"]."</a>\n".implode("\n", $diff);
