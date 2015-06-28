@@ -89,7 +89,7 @@ foreach($npc as $n) {
 				}
 				$group = $stdin;
 				$date = date("Y-m-d");
-				$n["name"] = mysql_real_escape_string($n["name"]);
+				$n["name"] = mysqli_real_escape_string($m_data->m_Con, $n["name"]);
 				$sql_data = "zone, id, name, nm, category, event, updated";
 				$sql_value = "'$zone', '{$n["id"]}', '{$n["name"]}', '$nm', '$group', '$event', '$date'";
 				$sql[] = "INSERT INTO monster (".$sql_data.") VALUES(".$sql_value.")";
