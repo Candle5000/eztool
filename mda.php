@@ -15,7 +15,7 @@ fread($infile, 257);
 while(!feof($infile)) {
 	$data = fread($infile, 1);
 	$buf = unpack("Cdata", $data);
-	if($buf["data"] == 255) {
+	if($buf["data"] == 255 || $buf["data"] == 254) {
 		fseek($infile, -2, SEEK_CUR);
 		break;
 	}
