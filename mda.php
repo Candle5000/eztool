@@ -75,13 +75,13 @@ foreach($npc as $n) {
 			$stdin = trim(fgets(STDIN));
 			if($stdin == 'y' || $stdin == 'e') {
 				$event = ($stdin == 'e') ? 1 : 0;
-				echo "分類を入力してください(0,100～152, 末尾にnを付加でNMとして登録) ";
+				echo "分類を入力してください(0,100～200, 末尾にnを付加でNMとして登録) ";
 				while(true) {
 					$stdin = trim(fgets(STDIN));
 					if(preg_match("/^([0-9]{3}|0{1})(n?)$/", $stdin, $match)) {
 						$group = $match[1];
 						$nm = ($match[2] == 'n') ? 1 : 0;
-						if($stdin == 0 || ($stdin >= 100 && $stdin <= 152)) {
+						if($stdin == 0 || ($stdin >= 100 && $stdin <= 200)) {
 							break;
 						}
 					}
