@@ -17,16 +17,24 @@ while($array = $result->fetch_array()) {
 }
 if(!isset($p_id)) die("データ読み込みに失敗しました\n");
 
+$sql = "SELECT * FROM `equip_class`";
+$result = $mysql->query($sql);
+while($array = $result->fetch_array()) {
+	$p_id["{$array["name"]}"] = $array["id"];
+}
+if(!isset($p_id)) die("データ読み込みに失敗しました\n");
+
 $sql = "SELECT `id`, REPLACE(CONCAT(`text`, ' ',`note`), '\\n', ' ') AS `text` FROM `items` WHERE `id` BETWEEN '20001' AND '50000'";
 $result = $mysql->query($sql);
 
 while($array = $result->fetch_array()) {
 	if(preg_match("/(<.*?>|\[.*?\]).*?Lv(([0-9]+)(～|→([0-9]+)))/", $array["text"], $i_match)) {
 		$i_id = $array["id"];
+		$class_id = floor(($i_id - 1) / 1000);
 		$is_metal = strstr($i_match[1], '<') ? "TRUE" : "FALSE";
 		$level_min = $i_match[3];
 		$level_max = (isset($i_match[5]) && $i_match[5] != "") ? $i_match[5] : -1;
-		$equip_values[] = "('$i_id', '$level_min', '$level_max', $is_metal)";
+		$equip_values[] = "('$i_id', '$class_id', '$level_min', '$level_max', $is_metal)";
 		$array["text"] = str_replace("特になし", "", $array["text"]);
 		$array["text"] = str_replace("DLY", "DELAY", $array["text"]);
 		$array["text"] = str_replace(" -", "-", $array["text"]);
@@ -66,6 +74,16 @@ while($array = $result->fetch_array()) {
 					} else {
 						$value_max = 1;
 						$value_min = 0;
+					}
+					if($name == "DMG") {
+						$dmg_max = $value_max;
+						$dmg_min = $value_min;
+					}
+					if($name == "DELAY") {
+						$delay = $value_max;
+						$dpd_max = round(($dmg_max / $delay), 3);
+						$dpd_min = round(($dmg_min / $delay), 3);
+						$parameter_values[] = "('$i_id', '{$p_id["D/D"]}', FALSE, '$dpd_min', '$dpd_max')";
 					}
 					if(isset($p_id[$name])) {
 						$parameter_values[] = "('$i_id', '{$p_id[$name]}', $adversity, '$value_min', '$value_max')";
