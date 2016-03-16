@@ -50,6 +50,7 @@ while($array = $result->fetch_array()) {
 		$array["text"] = str_replace("盾防御発動率UP", "盾防率UP", $array["text"]);
 		$array["text"] = str_replace("PROC発動率UP", "PROC率UP", $array["text"]);
 		$array["text"] = str_replace("アンデット", "アンデッド", $array["text"]);
+		$array["text"] = str_replace("詠唱妨害率", "詠唱妨害", $array["text"]);
 		$array["text"] = preg_replace("/(H|ヒール)回復(量)?/", "H回復量", $array["text"]);
 		$array["text"] = preg_replace("/Crit(火|水|土|風|光|闇)(火|水|土|風|光|闇)(\\+[0-9]+%)/", "Crit\$1\$3 Crit\$2\$3", $array["text"]);
 		$parameters = explode(" ", str_replace($i_match[0], "", $array["text"]));
