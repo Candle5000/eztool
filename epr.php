@@ -45,6 +45,7 @@ while($array = $result->fetch_array()) {
 		$array["text"] = str_replace("金属値-", "金属-", $array["text"]);
 		$array["text"] = str_replace("DEX -", "DEX-", $array["text"]);
 		$array["text"] = str_replace("13H回復量", "13 H回復量", $array["text"]);
+		$array["text"] = str_replace("24 STR-9", "24", $array["text"]);
 		$array["text"] = str_replace("属性ダメージ", "属性DMG", $array["text"]);
 		$array["text"] = str_replace("アップ", "UP", $array["text"]);
 		$array["text"] = str_replace("ダウン", "DOWN", $array["text"]);
@@ -54,6 +55,9 @@ while($array = $result->fetch_array()) {
 		$array["text"] = str_replace("詠唱妨害率", "詠唱中断率", $array["text"]);
 		$array["text"] = preg_replace("/([^A])P:/", "\$1PROC:", $array["text"]);
 		$array["text"] = preg_replace("/(H|ヒール)回復(量)?/", "H回復量", $array["text"]);
+		$array["text"] = preg_replace("/(火|水|土|風|光|闇)(火|水|土|風|光|闇)攻(\\+[0-9]+)/", "\$1攻\$3 \$2攻\$3", $array["text"]);
+		$array["text"] = preg_replace("/(火|水|土|風|光|闇)(火|水|土|風|光|闇)命(\\+[0-9]+)/", "\$1命\$3 \$2命\$3", $array["text"]);
+		$array["text"] = preg_replace("/(火|水|土|風|光|闇)(火|水|土|風|光|闇)抵(\\+[0-9]+)/", "\$1抵\$3 \$2抵\$3", $array["text"]);
 		$array["text"] = preg_replace("/Crit(火|水|土|風|光|闇)(火|水|土|風|光|闇)(\\+[0-9]+%)/", "Crit\$1\$3 Crit\$2\$3", $array["text"]);
 		$parameters = explode(" ", str_replace($i_match[0], "", $array["text"]));
 		foreach($parameters as $parameter) {
