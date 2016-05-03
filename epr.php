@@ -40,6 +40,7 @@ while($array = $result->fetch_array()) {
 		$array["text"] = str_replace(" -", "-", $array["text"]);
 		$array["text"] = str_replace("：", ":", $array["text"]);
 		$array["text"] = str_replace("％", "%", $array["text"]);
+		$array["text"] = str_replace("*", "", $array["text"]);
 		$array["text"] = str_replace("T:", "TRAP:", $array["text"]);
 		$array["text"] = str_replace("低", "抵", $array["text"]);
 		$array["text"] = str_replace("金属値-", "金属-", $array["text"]);
