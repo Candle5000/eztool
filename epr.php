@@ -59,6 +59,9 @@ while($array = $result->fetch_array()) {
 		$array["text"] = preg_replace("/(火|水|土|風|光|闇)(火|水|土|風|光|闇)攻(\\+[0-9]+)/", "\$1攻\$3 \$2攻\$3", $array["text"]);
 		$array["text"] = preg_replace("/(火|水|土|風|光|闇)(火|水|土|風|光|闇)命(\\+[0-9]+)/", "\$1命\$3 \$2命\$3", $array["text"]);
 		$array["text"] = preg_replace("/(火|水|土|風|光|闇)(火|水|土|風|光|闇)抵(\\+[0-9]+)/", "\$1抵\$3 \$2抵\$3", $array["text"]);
+		$array["text"] = preg_replace("/(火|水|土|風|光|闇)攻命(\\+[0-9]+)/", "\$1攻\$2 \$1命\$2", $array["text"]);
+		$array["text"] = preg_replace("/(火|水|土|風|光|闇)攻抵(\\+[0-9]+)/", "\$1攻\$2 \$1抵\$2", $array["text"]);
+		$array["text"] = preg_replace("/(火|水|土|風|光|闇)命抵(\\+[0-9]+)/", "\$1命\$2 \$1抵\$2", $array["text"]);
 		$array["text"] = preg_replace("/Crit(火|水|土|風|光|闇)(火|水|土|風|光|闇)(\\+[0-9]+%)/", "Crit\$1\$3 Crit\$2\$3", $array["text"]);
 		$parameters = explode(" ", str_replace($i_match[0], "", $array["text"]));
 		foreach($parameters as $parameter) {
