@@ -84,8 +84,12 @@ foreach($item as $it) {
 			$sql_set[] = "price='".$it["price"]."'";
 			$diff[] = "price : ".$array["price"]." → ".$it["price"];
 		}
+		if($it["id"] == "49002") {
+			var_dump($array);
+			var_dump($it);
+		}
 		foreach($data as $d) {
-			if(($it[$d] != "") && ($array[$d] != $it[$d])) {
+			if(((string)$it[$d] != "") && ($array[$d] != $it[$d])) {
 				$sql_set[] = $d."='".$it[$d]."'";
 				if($d == "text") {
 					$diff[] = $d." :\n".$array[$d]."\n ↓\n".$it[$d];
